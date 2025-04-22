@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEET Flashcards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #d0e8f2, #f8d7f9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      padding: 25px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #333;
+      font-size: 1.5rem;
+    }
+    #counter {
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+    .flashcard {
+      perspective: 1200px;
+      height: 250px;
+      margin-bottom: 15px;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+      cursor: pointer;
+    }
+    .flashcard.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      background: #fdfdfd;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      padding: 10px;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+      background: #e8f5ff;
+    }
+    img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+    .controls, .jump {
+      margin-top: 10px;
+    }
+    button, input[type='number'] {
+      padding: 10px 16px;
+      margin: 5px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+    }
+    button {
+      background-color: #7e57c2;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #5e35b1;
+    }
+    input[type='number'] {
+      width: 80px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    @media (max-width: 500px) {
+      .container {
+        padding: 15px;
+      }
+      .flashcard {
+        height: 200px;
+      }
+      button, input[type='number'] {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📷 NEET Flashcards</h1>
+    <div id="counter">Flashcard 1 of 45</div>
+    <div class="flashcard" onclick="toggleAnswer()">
+      <div class="card-inner">
+        <div class="card-front" id="question"></div>
+        <div class="card-back" id="answer"></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button onclick="prevCard()">⟵ Prev</button>
+      <button onclick="nextCard()">Next ⟶</button>
+    </div>
+    <div class="jump">
+      <input type="number" id="jumpInput" placeholder="Go to..." min="1" max="45" />
+      <button onclick="jumpTo()">Go</button>
+    </div>
+  </div>
+
+  <script>
+    const totalFlashcards = 45;
+    let current = 0;
+
+    function renderCard() {
+      const qDiv = document.getElementById("question");
+      const aDiv = document.getElementById("answer");
+      const counter = document.getElementById("counter");
+      const card = document.querySelector(".flashcard");
+
+      if ((current + 1) % 10 === 0 && current !== totalFlashcards - 1) {
+        qDiv.innerHTML = "<div style='font-size:1.6rem;'>🌸 राधे राधे 🌸</div>";
+        aDiv.innerHTML = `<div style='margin-top:10px;font-size:0.95rem;'>You’ve completed ${current + 1} flashcards.</div>`;
+      } else {
+        const q = 2 * current + 1;
+        const a = 2 * current + 2;
+        qDiv.innerHTML = `<img src="images/${q}.png" alt="Q${current + 1}" />`;
+        aDiv.innerHTML = `<img src="images/${a}.png" alt="A${current + 1}" />`;
+      }
+
+      counter.textContent = `Flashcard ${current + 1} of ${totalFlashcards}`;
+      card.classList.remove("flipped");
+    }
+
+    function toggleAnswer() {
+      document.querySelector(".flashcard").classList.toggle("flipped");
+    }
+
+    function nextCard() {
+      current = (current + 1) % totalFlashcards;
+      renderCard();
+    }
+
+    function prevCard() {
+      current = (current - 1 + totalFlashcards) % totalFlashcards;
+      renderCard();
+    }
+
+    function jumpTo() {
+      const input = document.getElementById("jumpInput").value;
+      const num = parseInt(input);
+      if (!isNaN(num) && num >= 1 && num <= totalFlashcards) {
+        current = num - 1;
+        renderCard();
+      }
+    }
+
+    window.onload = renderCard;
+  </script>
+</body>
+</html>
